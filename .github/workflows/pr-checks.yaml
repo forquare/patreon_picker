@@ -47,3 +47,15 @@ jobs:
         uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200  # v6.0.0
         with:
           args: build  --snapshot --clean
+
+  debug_next_version:
+    name: Debug next version
+    runs-on: ubuntu-latest
+    steps:
+      - name: DEBUG DRY-RUN Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b  # v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+          dry_run: true
