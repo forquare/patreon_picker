@@ -1,0 +1,50 @@
+version: 2
+project_name: patreon-picker
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+builds:
+  - binary: patreon_picker
+    ldflags: -s -w -X main.Version={{ .Version }}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - freebsd
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: amd64
+      - goos: freebsd
+        goarch: arm64
+archives:
+  - name_template: >-
+      {{ .ProjectName }}-
+      {{- .Version }}-
+      {{- if eq .Os "linux" }}Linux
+      {{- else if eq .Os "darwin" }}macOS
+      {{- else }}{{ .Os }}{{ end }}-
+      {{- if eq .Arch "amd64" }}64bit
+      {{- else if eq .Arch "arm64" }}ARM64
+      {{- end }}
+    format: txz
+    files:
+      - LICENSE*
+      - static
+      - templates
+    wrap_in_directory: true
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  version_template: "{{ incpatch .Version }}-snapshot"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+gomod:
+  proxy: false

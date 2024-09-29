@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  check_files:
+    runs-on: ubuntu-latest
+    outputs:
+      skip_release: ${{ steps.check.outputs.skip_release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938  # v4.2.0
+      - name: 'Get changed files'
+        id: 'get_files'
+        uses: masesgroup/retrieve-changed-files@491e80760c0e28d36ca6240a27b1ccb8e1402c13  # v3.0.0
+      - name: 'Checking files'
+        id: 'check'
+        run: |
+          if echo ${{ steps.get_files.outputs.all }} | tr ' ' '\n' | grep -Ev $(grep -Ev '^#|^$' .github/files_that_skip_release | tr '\n' '|' | sed 's/|$//'); then
+            echo "Not skipping release"
+            echo "skip_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "Skipping release - default"
+            echo "skip_release=true" >> $GITHUB_OUTPUT
+          fi
+
+
+  tag:
+    needs: check_files
+    if: github.ref == 'main' && github.event.pull_request.merged == true && needs.check_files.outputs.skip_release == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938  # v4.2.0
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b  # v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+
+  build_and_release:
+    needs: tag
+    if: github.ref == 'main' && github.event.pull_request.merged == true && needs.check_files.outputs.skip_release == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938  # v4.2.0
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32  # 5.0.2
+        with:
+          go-version: '^1.23'
+          cache: false
+      - name: GoReleaser Action
+        uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200  # v6.0.0
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

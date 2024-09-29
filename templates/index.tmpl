@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=10">
+
+		<title>Patreon Picker</title>
+		<link rel="icon" type="image/png" href="/img/favicon.ico" />
+		<link rel="stylesheet" href="/css/main.css">
+	</head>
+	<body>
+		<div class="content">
+			<h1 class="header_text">Patreon Picker v{{ .version }} &#128073;&#128129;</h1>
+			<img class="header_img"  src="/img/header.png" alt="Header" />
+
+
+			<div class="content_body">
+				<p><b>Select the Patreons below from the date on which your episode is going live to the public.</b></p>
+			</div>
+
+			{{ range .mentions }}
+				<div class="content_body">
+					{{ if .IsInPast }}
+						<h2>&#128680;&#128680;&#128680; Last {{ .PublishDate }}&#128680;&#128680;&#128680;</h2>
+					{{ else }}
+						<h2>&#128467; {{ .PublishDate }}</h2>
+					{{ end }}
+					{{ $lastName := index .Names (add (len .Names) -1) }}
+					{{ $firstName := index .Names 0 }}
+					{{ $penultimateName := index .Names (add (len .Names) -2) }}
+					{{ $nameCount := len .Names }}
+					{{ $counter := 0 }}
+					<p>{{ range .Names }}{{ if and (eq $nameCount 2) (eq $lastName .) }} and {{ else if eq $lastName . }}, and {{ else if and (eq $penultimateName .) (ne $nameCount 2) }}, {{ else if ne $firstName . }}, {{ end }}{{ . }}{{- end -}}</p>
+				</div>
+			{{ end }}
+		</div>
+	</body>
+</html>

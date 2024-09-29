@@ -1,0 +1,6 @@
+# List of patterns that, if matched, could skip the release
+# If a PR includes files that _DO NOT_ match a pattern below, the release will continue
+^README.md$
+^.github/.*$
+^.gitignore$
+^.goreleaser.yaml$
