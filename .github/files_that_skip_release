@@ -4,3 +4,5 @@
 ^.github/.*$
 ^.gitignore$
 ^.goreleaser.yaml$
+^.go.mod$
+^.go.sum$
