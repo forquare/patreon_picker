@@ -8,7 +8,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
 	golang.org/x/net v0.31.0
-	golang.org/x/oauth2 v0.23.0
+	golang.org/x/oauth2 v0.24.0
 	gopkg.in/mxpv/patreon-go.v1 v1.0.0-20171031001022-1d2f253ac700
 )
 
