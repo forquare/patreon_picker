@@ -3,7 +3,7 @@ module github.com/forquare/patreon_picker
 go 1.23.1
 
 require (
-	github.com/gin-contrib/sessions v1.0.1
+	github.com/gin-contrib/sessions v1.0.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
