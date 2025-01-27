@@ -30,7 +30,8 @@ archives:
       {{- if eq .Arch "amd64" }}64bit
       {{- else if eq .Arch "arm64" }}ARM64
       {{- end }}
-    format: txz
+    formats:
+      - txz
     files:
       - LICENSE*
       - static
