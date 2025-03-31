@@ -9,6 +9,12 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "03:00" # UTC
+    groups:
+      go:
+        patterns:
+          - "*"
     assignees:
       - "forquare"
     reviewers:
@@ -24,6 +30,12 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "03:00" # UTC
+    groups:
+      github-actions:
+        patterns:
+          - "*"
     assignees:
       - "forquare"
     reviewers:
